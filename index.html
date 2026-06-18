@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,136 +8,223 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* ── Tokens ──────────────────────────────────────────── */
+    :root {
+      --bg:            #f4f4f5;
+      --surface:       #ffffff;
+      --surface-2:     #fafafa;
+      --border:        #e2e2e5;
+      --border-subtle: #eeeeef;
+      --text:          #1a1a1a;
+      --text-muted:    #888;
+      --text-faint:    #bbb;
+      --accent:        #1a56db;
+      --accent-hover:  #1447c7;
+      --success:       #2e7d32;
+      --warn:          #e65100;
+      --error:         #c62828;
+      --subject-bg:    #1a56db;
+      --subject-text:  #ffffff;
+    }
+
+    [data-theme="dark"] {
+      --bg:            #111113;
+      --surface:       #1c1c1f;
+      --surface-2:     #232326;
+      --border:        #38383d;
+      --border-subtle: #2a2a2e;
+      --text:          #ececec;
+      --text-muted:    #8e8e93;
+      --text-faint:    #48484c;
+      --accent:        #4b8ef5;
+      --accent-hover:  #6aa3ff;
+      --success:       #66bb6a;
+      --warn:          #ffa726;
+      --error:         #ef5350;
+      --subject-bg:    #2563eb;
+      --subject-text:  #ffffff;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #f5f5f5;
+      background: var(--bg);
+      color: var(--text);
       height: 100vh;
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      transition: background 0.2s, color 0.2s;
     }
 
-    .subject-strip {
-      background: #fff;
-      border-bottom: 1px solid #e8e8e8;
+    /* ── Header ──────────────────────────────────────────── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
       padding: 0 16px;
-      height: 38px;
+      height: 52px;
       display: flex;
       align-items: center;
       gap: 12px;
       flex-shrink: 0;
+      transition: background 0.2s, border-color 0.2s;
     }
 
-    .subject-strip label {
+    .brand {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .brand h1 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .brand .tagline {
+      font-size: 12px;
+      color: var(--text-faint);
+      white-space: nowrap;
+    }
+
+    .header-sep {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    /* Checkbox */
+    .subject-toggle {
       display: flex;
       align-items: center;
       gap: 6px;
       font-size: 12.5px;
-      color: #555;
+      color: var(--text-muted);
       cursor: pointer;
       user-select: none;
       white-space: nowrap;
-    }
-
-    .subject-strip input[type="checkbox"] {
-      width: 14px;
-      height: 14px;
-      cursor: pointer;
-      accent-color: #1a56db;
-    }
-
-    .subject-divider {
-      width: 1px;
-      height: 18px;
-      background: #ddd;
       flex-shrink: 0;
     }
 
-    #subject-box {
-      display: none;
+    .subject-toggle input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+      accent-color: var(--accent);
+    }
+
+    /* Subject pill + copy button */
+    #subject-area {
+      display: flex;
       align-items: center;
       gap: 8px;
       flex: 1;
       min-width: 0;
+      overflow: hidden;
     }
 
-    #subject-box.visible { display: flex; }
+    #subject-pill {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      background: var(--subject-bg);
+      color: var(--subject-text);
+      border-radius: 5px;
+      padding: 4px 10px 4px 10px;
+      max-width: 100%;
+      min-width: 0;
+      flex-shrink: 1;
+    }
 
-    .subject-label {
-      font-size: 11px;
-      font-weight: 700;
+    #subject-pill.visible { display: flex; }
+
+    #subject-pill.flash {
+      animation: subjectFlash 0.7s ease-out forwards;
+    }
+
+    @keyframes subjectFlash {
+      0%   { opacity: 0; transform: translateY(-5px) scale(0.97); }
+      35%  { opacity: 1; transform: translateY(0)    scale(1.02); }
+      60%  { transform: scale(1); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    #subject-label {
+      font-size: 9.5px;
+      font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #bbb;
+      letter-spacing: 0.1em;
+      opacity: 0.75;
       white-space: nowrap;
       flex-shrink: 0;
     }
 
-    #subject-text {
-      flex: 1;
-      min-width: 0;
+    #subject-value {
       font-size: 13px;
-      color: #222;
+      font-weight: 600;
+      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
+      min-width: 0;
     }
 
-    #subject-text.empty { color: #ccc; font-style: italic; }
-
     #copy-subject-btn {
-      padding: 3px 10px;
-      background: #f0f0f0;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 11.5px;
-      color: #555;
+      padding: 2px 8px;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 3px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #fff;
       cursor: pointer;
       white-space: nowrap;
       flex-shrink: 0;
       transition: background 0.12s;
     }
 
-    #copy-subject-btn:hover { background: #e4e4e4; }
-    #copy-subject-btn:disabled { opacity: 0.4; cursor: default; }
+    #copy-subject-btn:hover { background: rgba(255,255,255,0.28); }
 
-    header {
-      background: #fff;
-      border-bottom: 1px solid #e0e0e0;
-      padding: 0 20px;
-      height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    /* Spacer */
+    .header-spacer { flex: 1; }
+
+    /* Dark mode toggle */
+    #theme-btn {
+      padding: 5px 11px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      cursor: pointer;
+      white-space: nowrap;
       flex-shrink: 0;
+      transition: background 0.15s, border-color 0.15s;
     }
 
-    .brand { display: flex; align-items: baseline; gap: 10px; }
+    #theme-btn:hover { background: var(--border); }
 
-    .brand h1 {
-      font-size: 16px;
-      font-weight: 700;
-      color: #111;
-      letter-spacing: -0.02em;
-    }
-
-    .brand .tagline { font-size: 12px; color: #aaa; }
-
+    /* Copy rich text */
     #copy-btn {
       padding: 6px 14px;
-      background: #1a56db;
+      background: var(--accent);
       color: #fff;
       border: none;
       border-radius: 5px;
       font-size: 13px;
       font-weight: 500;
       cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
       transition: background 0.15s, opacity 0.15s;
     }
 
-    #copy-btn:hover { background: #1447c7; }
-    #copy-btn:disabled { opacity: 0.4; cursor: default; }
+    #copy-btn:hover { background: var(--accent-hover); }
+    #copy-btn:disabled { opacity: 0.35; cursor: default; }
 
+    /* ── Workspace ───────────────────────────────────────── */
     .workspace { flex: 1; display: flex; overflow: hidden; }
 
     .pane {
@@ -145,21 +232,23 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      background: #fff;
+      background: var(--surface);
+      transition: background 0.2s;
     }
 
-    .pane + .pane { border-left: 1px solid #e0e0e0; }
+    .pane + .pane { border-left: 1px solid var(--border); }
 
     .pane-label {
       font-size: 10px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: #bbb;
+      color: var(--text-faint);
       padding: 6px 18px;
-      background: #fafafa;
-      border-bottom: 1px solid #efefef;
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--border-subtle);
       flex-shrink: 0;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
     }
 
     textarea {
@@ -172,22 +261,35 @@
       font-size: 13.5px;
       line-height: 1.65;
       resize: none;
-      color: #222;
-      background: #fff;
+      color: var(--text);
+      background: var(--surface);
+      transition: background 0.2s, color 0.2s;
     }
 
-    textarea::placeholder { color: #ccc; }
+    textarea::placeholder { color: var(--text-faint); }
 
-    .preview-wrap { flex: 1; overflow-y: auto; padding: 18px 22px; }
+    .preview-wrap {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px 22px;
+      background: var(--surface);
+      transition: background 0.2s;
+    }
 
-    .preview-wrap .empty-hint { color: #ccc; font-size: 13px; }
+    /* ── Preview typography ──────────────────────────────── */
+    .preview-wrap .empty-hint { color: var(--text-faint); font-size: 13px; }
 
     .preview-wrap h1,
     .preview-wrap h2,
     .preview-wrap h3,
     .preview-wrap h4,
     .preview-wrap h5,
-    .preview-wrap h6 { margin: 1em 0 0.4em; font-weight: 600; line-height: 1.3; color: #111; }
+    .preview-wrap h6 {
+      margin: 1em 0 0.4em;
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--text);
+    }
     .preview-wrap h1 { font-size: 1.7em; }
     .preview-wrap h2 { font-size: 1.35em; }
     .preview-wrap h3 { font-size: 1.15em; }
@@ -195,16 +297,14 @@
     .preview-wrap h2:first-child,
     .preview-wrap h3:first-child { margin-top: 0; }
 
-    .preview-wrap p { margin: 0.55em 0; color: #333; font-size: 14px; line-height: 1.65; }
-    .preview-wrap ul,
-    .preview-wrap ol { margin: 0.5em 0; padding-left: 22px; }
-    .preview-wrap li { margin: 0.2em 0; font-size: 14px; color: #333; line-height: 1.65; }
-    .preview-wrap li + li { margin-top: 0.15em; }
+    .preview-wrap p { margin: 0.55em 0; color: var(--text); font-size: 14px; line-height: 1.65; }
+    .preview-wrap ul, .preview-wrap ol { margin: 0.5em 0; padding-left: 22px; }
+    .preview-wrap li { margin: 0.2em 0; font-size: 14px; color: var(--text); line-height: 1.65; }
     .preview-wrap strong { font-weight: 600; }
     .preview-wrap em { font-style: italic; }
 
     .preview-wrap code {
-      background: #f0f0f0;
+      background: var(--surface-2);
       padding: 1px 5px;
       border-radius: 3px;
       font-family: ui-monospace, 'Consolas', monospace;
@@ -212,48 +312,51 @@
       color: #d63384;
     }
 
+    [data-theme="dark"] .preview-wrap code { color: #f472b6; }
+
     .preview-wrap pre {
-      background: #f6f8fa;
-      border: 1px solid #e8e8e8;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
       border-radius: 5px;
       padding: 12px 16px;
       overflow-x: auto;
       margin: 0.8em 0;
     }
 
-    .preview-wrap pre code { background: none; padding: 0; color: #222; font-size: 13px; }
-
+    .preview-wrap pre code { background: none; padding: 0; color: var(--text); font-size: 13px; }
     .preview-wrap blockquote {
-      border-left: 3px solid #d0d0d0;
+      border-left: 3px solid var(--border);
       margin: 0.7em 0;
       padding: 2px 0 2px 16px;
-      color: #666;
+      color: var(--text-muted);
     }
-
     .preview-wrap table { border-collapse: collapse; margin: 0.8em 0; font-size: 14px; width: 100%; }
-    .preview-wrap th, .preview-wrap td { border: 1px solid #ddd; padding: 6px 12px; text-align: left; }
-    .preview-wrap th { background: #f5f5f5; font-weight: 600; color: #222; }
-    .preview-wrap hr { border: none; border-top: 1px solid #e0e0e0; margin: 1.2em 0; }
-    .preview-wrap a { color: #1a56db; text-decoration: underline; }
+    .preview-wrap th, .preview-wrap td { border: 1px solid var(--border); padding: 6px 12px; text-align: left; }
+    .preview-wrap th { background: var(--surface-2); font-weight: 600; }
+    .preview-wrap hr { border: none; border-top: 1px solid var(--border); margin: 1.2em 0; }
+    .preview-wrap a { color: var(--accent); text-decoration: underline; }
 
+    /* ── Status bar ──────────────────────────────────────── */
     .status-bar {
       height: 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 16px;
-      background: #fafafa;
-      border-top: 1px solid #e0e0e0;
+      background: var(--surface-2);
+      border-top: 1px solid var(--border);
       flex-shrink: 0;
       font-size: 11.5px;
-      color: #aaa;
+      color: var(--text-faint);
+      transition: background 0.2s, border-color 0.2s;
     }
 
     #status-msg { transition: color 0.2s; }
-    #status-msg.success { color: #2e7d32; font-weight: 500; }
-    #status-msg.warn    { color: #e65100; }
-    #status-msg.error   { color: #c62828; }
+    #status-msg.success { color: var(--success); font-weight: 500; }
+    #status-msg.warn    { color: var(--warn); }
+    #status-msg.error   { color: var(--error); }
 
+    /* ── Toast ───────────────────────────────────────────── */
     #toast {
       position: fixed;
       bottom: 44px;
@@ -270,33 +373,44 @@
       z-index: 200;
       white-space: nowrap;
     }
-
     #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    #toast.success { background: #2e7d32; }
-    #toast.warn    { background: #e65100; }
-    #toast.error   { background: #c62828; }
+    #toast.success { background: var(--success); }
+    #toast.warn    { background: var(--warn); }
+    #toast.error   { background: var(--error); }
   </style>
 </head>
 <body>
 
-<div class="subject-strip">
-  <label>
-    <input type="checkbox" id="remove-subject-cb">
-    Separate subject line
-  </label>
-  <div class="subject-divider" id="subject-divider" style="display:none"></div>
-  <div id="subject-box">
-    <span class="subject-label">Subject</span>
-    <span id="subject-text" class="empty">none detected</span>
-    <button id="copy-subject-btn" disabled>Copy</button>
-  </div>
-</div>
-
 <header>
+  <!-- Brand -->
   <div class="brand">
     <h1>Markout</h1>
-    <span class="tagline">Paste Markdown — paste rich text into Outlook</span>
+    <span class="tagline">Markdown → Outlook</span>
   </div>
+
+  <div class="header-sep"></div>
+
+  <!-- Subject toggle checkbox -->
+  <label class="subject-toggle">
+    <input type="checkbox" id="remove-subject-cb">
+    Separate subject
+  </label>
+
+  <!-- Subject pill (appears when subject is detected) -->
+  <div id="subject-area">
+    <div id="subject-pill">
+      <span id="subject-label">Subject</span>
+      <span id="subject-value"></span>
+      <button id="copy-subject-btn">Copy</button>
+    </div>
+  </div>
+
+  <!-- Dark mode toggle -->
+  <button id="theme-btn">Dark</button>
+
+  <div class="header-sep"></div>
+
+  <!-- Copy rich text -->
   <button id="copy-btn" disabled>Copy rich text</button>
 </header>
 
@@ -328,30 +442,40 @@
   var copyBtn        = document.getElementById('copy-btn');
   var toastEl        = document.getElementById('toast');
   var removeCb       = document.getElementById('remove-subject-cb');
-  var subjectBox     = document.getElementById('subject-box');
-  var subjectTextEl  = document.getElementById('subject-text');
+  var subjectPill    = document.getElementById('subject-pill');
+  var subjectValueEl = document.getElementById('subject-value');
   var copySubjectBtn = document.getElementById('copy-subject-btn');
-  var subjectDivider = document.getElementById('subject-divider');
+  var themeBtn       = document.getElementById('theme-btn');
 
-  var LS_KEY = 'markout_remove_subject';
+  var LS_SUBJECT = 'markout_remove_subject';
+  var LS_THEME   = 'markout_theme';
 
   marked.setOptions({ breaks: true, gfm: true });
 
-  // Restore saved preference
-  removeCb.checked = localStorage.getItem(LS_KEY) === '1';
-  updateSubjectUI();
+  // ── Theme ─────────────────────────────────────────────
+  var isDark = localStorage.getItem(LS_THEME) === 'dark';
 
-  removeCb.addEventListener('change', function () {
-    localStorage.setItem(LS_KEY, removeCb.checked ? '1' : '0');
-    updateSubjectUI();
-    render(inputEl.value);
+  function applyTheme(dark) {
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    themeBtn.textContent = dark ? 'Light' : 'Dark';
+  }
+
+  applyTheme(isDark);
+
+  themeBtn.addEventListener('click', function () {
+    isDark = !isDark;
+    localStorage.setItem(LS_THEME, isDark ? 'dark' : 'light');
+    applyTheme(isDark);
   });
 
-  function updateSubjectUI() {
-    var show = removeCb.checked;
-    subjectBox.classList.toggle('visible', show);
-    subjectDivider.style.display = show ? '' : 'none';
-  }
+  // ── Subject preference ────────────────────────────────
+  removeCb.checked = localStorage.getItem(LS_SUBJECT) === '1';
+
+  removeCb.addEventListener('change', function () {
+    localStorage.setItem(LS_SUBJECT, removeCb.checked ? '1' : '0');
+    if (!removeCb.checked) setSubject(null);
+    render(inputEl.value);
+  });
 
   // ── Markdown detection ────────────────────────────────
   var MD_PATTERNS = [
@@ -374,8 +498,6 @@
   }
 
   // ── Subject extraction ────────────────────────────────
-  // Matches "# Heading", "Subject: text", or "SUBJECT: text" on the
-  // very first non-empty line only.
   function extractSubject(text) {
     var lines = text.split('\n');
     for (var i = 0; i < lines.length; i++) {
@@ -394,17 +516,25 @@
 
   // ── Subject display ───────────────────────────────────
   var currentSubject = null;
+  var flashTimer;
 
   function setSubject(subject) {
+    var wasNull = currentSubject === null;
     currentSubject = subject;
+
     if (subject) {
-      subjectTextEl.textContent = subject;
-      subjectTextEl.classList.remove('empty');
-      copySubjectBtn.disabled = false;
+      subjectValueEl.textContent = subject;
+      subjectPill.classList.add('visible');
+      // Flash animation on every new subject detection
+      subjectPill.classList.remove('flash');
+      clearTimeout(flashTimer);
+      // Force reflow so removing+re-adding the class retriggers the animation
+      void subjectPill.offsetWidth;
+      subjectPill.classList.add('flash');
+      flashTimer = setTimeout(function () { subjectPill.classList.remove('flash'); }, 800);
     } else {
-      subjectTextEl.textContent = 'none detected';
-      subjectTextEl.classList.add('empty');
-      copySubjectBtn.disabled = true;
+      subjectPill.classList.remove('visible', 'flash');
+      subjectValueEl.textContent = '';
     }
   }
 
@@ -418,12 +548,12 @@
   });
 
   // ── Toast ─────────────────────────────────────────────
-  var toastTimer;
+  var toastTimer2;
   function showToast(msg, type, ms) {
     toastEl.textContent = msg;
     toastEl.className = 'show ' + (type || 'success');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { toastEl.className = ''; }, ms || 2400);
+    clearTimeout(toastTimer2);
+    toastTimer2 = setTimeout(function () { toastEl.className = ''; }, ms || 2400);
   }
 
   function setStatus(msg, type) {
@@ -441,7 +571,7 @@
   }
 
   // ── Render ────────────────────────────────────────────
-  var lastHtml = '';
+  var lastHtml  = '';
   var lastPlain = '';
 
   function render(text) {
@@ -459,9 +589,9 @@
     var words = text.trim().split(/\s+/).filter(Boolean).length;
     countEl.textContent = words + ' word' + (words === 1 ? '' : 's');
 
-    // Subject extraction runs BEFORE the Markdown gate so that plain-text
-    // emails with a "Subject: ..." first line are still processed.
-    var bodyText = text;
+    // Subject extraction runs BEFORE Markdown gate so plain-text
+    // emails with "Subject: ..." are processed even without Markdown syntax.
+    var bodyText   = text;
     var hasSubject = false;
     if (removeCb.checked) {
       var subject = extractSubject(text);
@@ -475,7 +605,7 @@
     if (!hasSubject && !isMarkdown(text)) {
       previewEl.innerHTML = '<span class="empty-hint">No Markdown detected</span>';
       copyBtn.disabled = true;
-      lastHtml = '';
+      lastHtml  = '';
       lastPlain = '';
       setStatus('No Markdown syntax found', 'warn');
       return;
