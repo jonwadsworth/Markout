@@ -342,6 +342,49 @@
     #toast.success { background: var(--success); }
     #toast.warn    { background: var(--warn); }
     #toast.error   { background: var(--error); }
+  
+    /* ── Mobile ──────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      /* Header: shrink and drop non-essential items */
+      header { height: auto; min-height: 48px; padding: 8px 12px; flex-wrap: wrap; gap: 6px; position: static; }
+
+      /* Brand: smaller, no tagline */
+      .brand-name { font-size: 17px; }
+      .brand-tagline { display: none; }
+
+      /* Subject area: not absolutely centered on mobile — hide it.
+         Clipboard still updates; subject pill is a desktop nicety. */
+      #subject-area { display: none; }
+
+      /* Compress actions row */
+      .header-actions { gap: 4px; }
+
+      /* Show checkbox only — hide the label text */
+      .subject-toggle { font-size: 0; padding: 2px 4px; }
+      .subject-toggle input[type="checkbox"] { width: 16px; height: 16px; font-size: initial; }
+
+      /* Hide GitHub (accessible from FAQ page) and separators */
+      .header-link[href*="github"] { display: none; }
+      .header-sep { display: none; }
+
+      /* Tighten buttons */
+      .header-link { padding: 5px 8px; font-size: 12px; }
+      #theme-btn { padding: 5px 8px; font-size: 12px; }
+      #copy-btn { padding: 6px 10px; font-size: 12px; }
+    }
+
+    @media (max-width: 600px) {
+      /* Workspace: stack panes vertically */
+      .workspace { flex-direction: column; }
+      .pane + .pane { border-left: none; border-top: 1px solid var(--border); }
+
+      /* Textarea gets 55% of vertical space, preview 45% */
+      .pane:first-child { flex: 55; }
+      .pane:last-child  { flex: 45; }
+
+      textarea { font-size: 16px; /* prevent iOS auto-zoom on focus */ padding: 12px; }
+      .preview-wrap { padding: 12px 14px; }
+    }
   </style>
 </head>
 <body>
@@ -562,4 +605,5 @@
 </script>
 </body>
 </html>
+
 

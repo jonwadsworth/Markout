@@ -296,6 +296,28 @@
     .gh-btn.primary:hover { background: var(--accent-hover); }
     .gh-btn.secondary { background: var(--surface-2); border: 1px solid var(--border); color: var(--text); }
     .gh-btn.secondary:hover { background: var(--border); }
+  
+    /* ── Mobile ──────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      nav { padding: 0 14px; }
+      .nav-brand { font-size: 16px; }
+
+      /* Keep: brand, theme toggle, Open MarkOut — hide GitHub */
+      .nav-link[href*="github"] { display: none; }
+
+      .nav-right { gap: 6px; }
+      #theme-btn { padding: 4px 8px; font-size: 12px; }
+      .nav-link { padding: 5px 10px; font-size: 12.5px; }
+
+      .hero { padding: 32px 16px 28px; }
+      .hero h1 { font-size: 32px; }
+      .hero .sub { font-size: 15px; }
+
+      .content { padding: 0 14px 60px; }
+
+      .github-cta .btn-row { flex-direction: column; align-items: center; }
+      .gh-btn { width: 100%; text-align: center; }
+    }
   </style>
 </head>
 <body>
@@ -434,4 +456,5 @@
 </script>
 </body>
 </html>
+
 
