@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Markout</title>
+  <title>Markout — Paste Markdown. Send formatted email.</title>
   <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* ── Tokens ──────────────────────────────────────────── */
     :root {
       --bg:            #f4f4f5;
       --surface:       #ffffff;
@@ -23,8 +22,6 @@
       --success:       #2e7d32;
       --warn:          #e65100;
       --error:         #c62828;
-      --subject-bg:    #1a56db;
-      --subject-text:  #ffffff;
     }
 
     [data-theme="dark"] {
@@ -41,8 +38,6 @@
       --success:       #66bb6a;
       --warn:          #ffa726;
       --error:         #ef5350;
-      --subject-bg:    #2563eb;
-      --subject-text:  #ffffff;
     }
 
     body {
@@ -58,112 +53,88 @@
 
     /* ── Header ──────────────────────────────────────────── */
     header {
+      position: relative;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
       padding: 0 16px;
-      height: 52px;
+      height: 60px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: space-between;
       flex-shrink: 0;
       transition: background 0.2s, border-color 0.2s;
     }
 
+    /* Left: brand */
     .brand {
       display: flex;
-      align-items: baseline;
-      gap: 8px;
+      flex-direction: column;
+      justify-content: center;
       flex-shrink: 0;
+      line-height: 1.2;
     }
 
-    .brand h1 {
-      font-size: 16px;
-      font-weight: 700;
+    .brand-name {
+      font-size: 22px;
+      font-weight: 800;
       color: var(--text);
-      letter-spacing: -0.02em;
+      letter-spacing: -0.04em;
     }
 
-    .brand .tagline {
-      font-size: 12px;
+    .brand-tagline {
+      font-size: 11px;
       color: var(--text-faint);
-      white-space: nowrap;
+      letter-spacing: 0.01em;
     }
 
-    .header-sep {
-      width: 1px;
-      height: 20px;
-      background: var(--border);
-      flex-shrink: 0;
-    }
-
-    /* Checkbox */
-    .subject-toggle {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12.5px;
-      color: var(--text-muted);
-      cursor: pointer;
-      user-select: none;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .subject-toggle input[type="checkbox"] {
-      width: 14px;
-      height: 14px;
-      cursor: pointer;
-      accent-color: var(--accent);
-    }
-
-    /* Subject pill + copy button */
+    /* Center: subject pill — absolute so it stays truly centered */
     #subject-area {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 38%;
       display: flex;
       align-items: center;
-      gap: 8px;
-      flex: 1;
-      min-width: 0;
-      overflow: hidden;
+      pointer-events: none;
     }
 
     #subject-pill {
       display: none;
       align-items: center;
-      gap: 8px;
-      background: var(--subject-bg);
-      color: var(--subject-text);
-      border-radius: 5px;
-      padding: 4px 10px 4px 10px;
+      gap: 7px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 6px;
+      padding: 5px 11px;
       max-width: 100%;
       min-width: 0;
-      flex-shrink: 1;
+      pointer-events: all;
     }
 
     #subject-pill.visible { display: flex; }
 
     #subject-pill.flash {
-      animation: subjectFlash 0.7s ease-out forwards;
+      animation: pillAppear 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     }
 
-    @keyframes subjectFlash {
-      0%   { opacity: 0; transform: translateY(-5px) scale(0.97); }
-      35%  { opacity: 1; transform: translateY(0)    scale(1.02); }
-      60%  { transform: scale(1); }
-      100% { opacity: 1; transform: scale(1); }
+    @keyframes pillAppear {
+      0%   { opacity: 0; transform: translateY(-6px) scale(0.95); }
+      60%  { opacity: 1; transform: translateY(1px)  scale(1.02); }
+      100% { opacity: 1; transform: translateY(0)    scale(1);    }
     }
 
     #subject-label {
-      font-size: 9.5px;
+      font-size: 9px;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      opacity: 0.75;
+      letter-spacing: 0.12em;
+      opacity: 0.7;
       white-space: nowrap;
       flex-shrink: 0;
     }
 
     #subject-value {
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 600;
       white-space: nowrap;
       overflow: hidden;
@@ -174,7 +145,7 @@
     #copy-subject-btn {
       padding: 2px 8px;
       background: rgba(255,255,255,0.18);
-      border: 1px solid rgba(255,255,255,0.3);
+      border: 1px solid rgba(255,255,255,0.28);
       border-radius: 3px;
       font-size: 11px;
       font-weight: 600;
@@ -182,31 +153,75 @@
       cursor: pointer;
       white-space: nowrap;
       flex-shrink: 0;
-      transition: background 0.12s;
+      transition: background 0.1s;
     }
 
-    #copy-subject-btn:hover { background: rgba(255,255,255,0.28); }
+    #copy-subject-btn:hover { background: rgba(255,255,255,0.3); }
 
-    /* Spacer */
-    .header-spacer { flex: 1; }
+    /* Right: actions */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
 
-    /* Dark mode toggle */
+    .subject-toggle {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+      padding: 4px 8px;
+    }
+
+    .subject-toggle input[type="checkbox"] {
+      width: 13px;
+      height: 13px;
+      cursor: pointer;
+      accent-color: var(--accent);
+    }
+
+    .header-link {
+      padding: 5px 10px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background 0.12s, color 0.12s;
+      white-space: nowrap;
+    }
+
+    .header-link:hover {
+      background: var(--border);
+      color: var(--text);
+    }
+
+    .header-sep {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      margin: 0 2px;
+      flex-shrink: 0;
+    }
+
     #theme-btn {
-      padding: 5px 11px;
-      background: var(--surface-2);
+      padding: 5px 10px;
+      background: transparent;
       border: 1px solid var(--border);
       border-radius: 5px;
-      font-size: 12.5px;
+      font-size: 12px;
       color: var(--text-muted);
       cursor: pointer;
       white-space: nowrap;
-      flex-shrink: 0;
-      transition: background 0.15s, border-color 0.15s;
+      transition: background 0.12s;
     }
 
     #theme-btn:hover { background: var(--border); }
 
-    /* Copy rich text */
     #copy-btn {
       padding: 6px 14px;
       background: var(--accent);
@@ -217,7 +232,6 @@
       font-weight: 500;
       cursor: pointer;
       white-space: nowrap;
-      flex-shrink: 0;
       transition: background 0.15s, opacity 0.15s;
     }
 
@@ -248,7 +262,6 @@
       background: var(--surface-2);
       border-bottom: 1px solid var(--border-subtle);
       flex-shrink: 0;
-      transition: background 0.2s, color 0.2s, border-color 0.2s;
     }
 
     textarea {
@@ -268,87 +281,48 @@
 
     textarea::placeholder { color: var(--text-faint); }
 
-    .preview-wrap {
-      flex: 1;
-      overflow-y: auto;
-      padding: 18px 22px;
-      background: var(--surface);
-      transition: background 0.2s;
-    }
+    .preview-wrap { flex: 1; overflow-y: auto; padding: 18px 22px; }
 
-    /* ── Preview typography ──────────────────────────────── */
     .preview-wrap .empty-hint { color: var(--text-faint); font-size: 13px; }
 
-    .preview-wrap h1,
-    .preview-wrap h2,
-    .preview-wrap h3,
-    .preview-wrap h4,
-    .preview-wrap h5,
-    .preview-wrap h6 {
-      margin: 1em 0 0.4em;
-      font-weight: 600;
-      line-height: 1.3;
-      color: var(--text);
+    .preview-wrap h1,.preview-wrap h2,.preview-wrap h3,
+    .preview-wrap h4,.preview-wrap h5,.preview-wrap h6 {
+      margin: 1em 0 0.4em; font-weight: 600; line-height: 1.3; color: var(--text);
     }
     .preview-wrap h1 { font-size: 1.7em; }
     .preview-wrap h2 { font-size: 1.35em; }
     .preview-wrap h3 { font-size: 1.15em; }
-    .preview-wrap h1:first-child,
-    .preview-wrap h2:first-child,
-    .preview-wrap h3:first-child { margin-top: 0; }
-
+    .preview-wrap h1:first-child,.preview-wrap h2:first-child,.preview-wrap h3:first-child { margin-top: 0; }
     .preview-wrap p { margin: 0.55em 0; color: var(--text); font-size: 14px; line-height: 1.65; }
-    .preview-wrap ul, .preview-wrap ol { margin: 0.5em 0; padding-left: 22px; }
+    .preview-wrap ul,.preview-wrap ol { margin: 0.5em 0; padding-left: 22px; }
     .preview-wrap li { margin: 0.2em 0; font-size: 14px; color: var(--text); line-height: 1.65; }
     .preview-wrap strong { font-weight: 600; }
     .preview-wrap em { font-style: italic; }
-
     .preview-wrap code {
-      background: var(--surface-2);
-      padding: 1px 5px;
-      border-radius: 3px;
-      font-family: ui-monospace, 'Consolas', monospace;
-      font-size: 0.88em;
-      color: #d63384;
+      background: var(--surface-2); padding: 1px 5px; border-radius: 3px;
+      font-family: ui-monospace,'Consolas',monospace; font-size: 0.88em; color: #d63384;
     }
-
     [data-theme="dark"] .preview-wrap code { color: #f472b6; }
-
     .preview-wrap pre {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      padding: 12px 16px;
-      overflow-x: auto;
-      margin: 0.8em 0;
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 5px; padding: 12px 16px; overflow-x: auto; margin: 0.8em 0;
     }
-
     .preview-wrap pre code { background: none; padding: 0; color: var(--text); font-size: 13px; }
     .preview-wrap blockquote {
-      border-left: 3px solid var(--border);
-      margin: 0.7em 0;
-      padding: 2px 0 2px 16px;
-      color: var(--text-muted);
+      border-left: 3px solid var(--border); margin: 0.7em 0;
+      padding: 2px 0 2px 16px; color: var(--text-muted);
     }
     .preview-wrap table { border-collapse: collapse; margin: 0.8em 0; font-size: 14px; width: 100%; }
-    .preview-wrap th, .preview-wrap td { border: 1px solid var(--border); padding: 6px 12px; text-align: left; }
+    .preview-wrap th,.preview-wrap td { border: 1px solid var(--border); padding: 6px 12px; text-align: left; }
     .preview-wrap th { background: var(--surface-2); font-weight: 600; }
     .preview-wrap hr { border: none; border-top: 1px solid var(--border); margin: 1.2em 0; }
     .preview-wrap a { color: var(--accent); text-decoration: underline; }
 
     /* ── Status bar ──────────────────────────────────────── */
     .status-bar {
-      height: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 16px;
-      background: var(--surface-2);
-      border-top: 1px solid var(--border);
-      flex-shrink: 0;
-      font-size: 11.5px;
-      color: var(--text-faint);
-      transition: background 0.2s, border-color 0.2s;
+      height: 28px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 16px; background: var(--surface-2); border-top: 1px solid var(--border);
+      flex-shrink: 0; font-size: 11.5px; color: var(--text-faint);
     }
 
     #status-msg { transition: color 0.2s; }
@@ -358,20 +332,11 @@
 
     /* ── Toast ───────────────────────────────────────────── */
     #toast {
-      position: fixed;
-      bottom: 44px;
-      left: 50%;
+      position: fixed; bottom: 44px; left: 50%;
       transform: translateX(-50%) translateY(8px);
-      padding: 9px 18px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 500;
-      color: #fff;
-      opacity: 0;
-      transition: opacity 0.18s ease, transform 0.18s ease;
-      pointer-events: none;
-      z-index: 200;
-      white-space: nowrap;
+      padding: 9px 18px; border-radius: 6px; font-size: 13px; font-weight: 500;
+      color: #fff; opacity: 0; transition: opacity 0.18s, transform 0.18s;
+      pointer-events: none; z-index: 200; white-space: nowrap;
     }
     #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     #toast.success { background: var(--success); }
@@ -382,21 +347,13 @@
 <body>
 
 <header>
-  <!-- Brand -->
+  <!-- Left: brand -->
   <div class="brand">
-    <h1>Markout</h1>
-    <span class="tagline">Markdown → Outlook</span>
+    <div class="brand-name">Markout</div>
+    <div class="brand-tagline">Paste Markdown. Send formatted email.</div>
   </div>
 
-  <div class="header-sep"></div>
-
-  <!-- Subject toggle checkbox -->
-  <label class="subject-toggle">
-    <input type="checkbox" id="remove-subject-cb">
-    Separate subject
-  </label>
-
-  <!-- Subject pill (appears when subject is detected) -->
+  <!-- Center: subject pill -->
   <div id="subject-area">
     <div id="subject-pill">
       <span id="subject-label">Subject</span>
@@ -405,13 +362,19 @@
     </div>
   </div>
 
-  <!-- Dark mode toggle -->
-  <button id="theme-btn">Dark</button>
-
-  <div class="header-sep"></div>
-
-  <!-- Copy rich text -->
-  <button id="copy-btn" disabled>Copy rich text</button>
+  <!-- Right: actions -->
+  <div class="header-actions">
+    <label class="subject-toggle">
+      <input type="checkbox" id="remove-subject-cb">
+      Separate subject
+    </label>
+    <div class="header-sep"></div>
+    <a href="/faq.html" target="_blank" class="header-link">FAQ</a>
+    <a href="https://github.com/jonwadsworth/Markout" target="_blank" class="header-link">GitHub</a>
+    <button id="theme-btn">Dark</button>
+    <div class="header-sep"></div>
+    <button id="copy-btn" disabled>Copy rich text</button>
+  </div>
 </header>
 
 <div class="workspace">
@@ -428,7 +391,7 @@
 </div>
 
 <div class="status-bar">
-  <span id="status-msg">Ready</span>
+  <span id="status-msg">Ready — paste Markdown or an email with a Subject: line</span>
   <span id="word-count"></span>
 </div>
 
@@ -454,14 +417,11 @@
 
   // ── Theme ─────────────────────────────────────────────
   var isDark = localStorage.getItem(LS_THEME) === 'dark';
-
   function applyTheme(dark) {
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
     themeBtn.textContent = dark ? 'Light' : 'Dark';
   }
-
   applyTheme(isDark);
-
   themeBtn.addEventListener('click', function () {
     isDark = !isDark;
     localStorage.setItem(LS_THEME, isDark ? 'dark' : 'light');
@@ -470,7 +430,6 @@
 
   // ── Subject preference ────────────────────────────────
   removeCb.checked = localStorage.getItem(LS_SUBJECT) === '1';
-
   removeCb.addEventListener('change', function () {
     localStorage.setItem(LS_SUBJECT, removeCb.checked ? '1' : '0');
     if (!removeCb.checked) setSubject(null);
@@ -479,23 +438,11 @@
 
   // ── Markdown detection ────────────────────────────────
   var MD_PATTERNS = [
-    /^#{1,6}\s/m,
-    /\*\*[^*\n]+\*\*/,
-    /\*[^*\n]+\*/,
-    /__[^_\n]+__/,
-    /^[\-\*\+]\s/m,
-    /^\d+\.\s/m,
-    /`[^`\n]+`/,
-    /^```/m,
-    /^\[.+\]\(.+\)/m,
-    /^>\s/m,
-    /\|.+\|/,
-    /^---+\s*$/m,
+    /^#{1,6}\s/m, /\*\*[^*\n]+\*\*/, /\*[^*\n]+\*/, /__[^_\n]+__/,
+    /^[\-\*\+]\s/m, /^\d+\.\s/m, /`[^`\n]+`/, /^```/m,
+    /^\[.+\]\(.+\)/m, /^>\s/m, /\|.+\|/, /^---+\s*$/m,
   ];
-
-  function isMarkdown(text) {
-    return MD_PATTERNS.some(function (p) { return p.test(text); });
-  }
+  function isMarkdown(text) { return MD_PATTERNS.some(function(p){ return p.test(text); }); }
 
   // ── Subject extraction ────────────────────────────────
   function extractSubject(text) {
@@ -517,21 +464,16 @@
   // ── Subject display ───────────────────────────────────
   var currentSubject = null;
   var flashTimer;
-
   function setSubject(subject) {
-    var wasNull = currentSubject === null;
     currentSubject = subject;
-
     if (subject) {
       subjectValueEl.textContent = subject;
       subjectPill.classList.add('visible');
-      // Flash animation on every new subject detection
       subjectPill.classList.remove('flash');
       clearTimeout(flashTimer);
-      // Force reflow so removing+re-adding the class retriggers the animation
       void subjectPill.offsetWidth;
       subjectPill.classList.add('flash');
-      flashTimer = setTimeout(function () { subjectPill.classList.remove('flash'); }, 800);
+      flashTimer = setTimeout(function(){ subjectPill.classList.remove('flash'); }, 700);
     } else {
       subjectPill.classList.remove('visible', 'flash');
       subjectValueEl.textContent = '';
@@ -542,9 +484,7 @@
     if (!currentSubject) return;
     navigator.clipboard.writeText(currentSubject).then(function () {
       showToast('Subject copied ✓', 'success', 1800);
-    }).catch(function () {
-      showToast('Copy failed', 'error', 2500);
-    });
+    }).catch(function () { showToast('Copy failed', 'error', 2500); });
   });
 
   // ── Toast ─────────────────────────────────────────────
@@ -553,13 +493,10 @@
     toastEl.textContent = msg;
     toastEl.className = 'show ' + (type || 'success');
     clearTimeout(toastTimer2);
-    toastTimer2 = setTimeout(function () { toastEl.className = ''; }, ms || 2400);
+    toastTimer2 = setTimeout(function(){ toastEl.className = ''; }, ms || 2400);
   }
 
-  function setStatus(msg, type) {
-    statusEl.textContent = msg;
-    statusEl.className = type || '';
-  }
+  function setStatus(msg, type) { statusEl.textContent = msg; statusEl.className = type || ''; }
 
   // ── Clipboard ─────────────────────────────────────────
   async function copyAsRichText(html, plain) {
@@ -571,17 +508,14 @@
   }
 
   // ── Render ────────────────────────────────────────────
-  var lastHtml  = '';
-  var lastPlain = '';
+  var lastHtml = '', lastPlain = '';
 
   function render(text) {
     if (!text.trim()) {
       previewEl.innerHTML = '<span class="empty-hint">Preview appears here after you paste</span>';
-      copyBtn.disabled = true;
-      lastHtml = '';
-      lastPlain = '';
+      copyBtn.disabled = true; lastHtml = ''; lastPlain = '';
       countEl.textContent = '';
-      setStatus('Ready');
+      setStatus('Ready — paste Markdown or an email with a Subject: line');
       if (removeCb.checked) setSubject(null);
       return;
     }
@@ -589,30 +523,21 @@
     var words = text.trim().split(/\s+/).filter(Boolean).length;
     countEl.textContent = words + ' word' + (words === 1 ? '' : 's');
 
-    // Subject extraction runs BEFORE Markdown gate so plain-text
-    // emails with "Subject: ..." are processed even without Markdown syntax.
-    var bodyText   = text;
-    var hasSubject = false;
+    var bodyText = text, hasSubject = false;
     if (removeCb.checked) {
       var subject = extractSubject(text);
       setSubject(subject);
-      if (subject) {
-        hasSubject = true;
-        bodyText = stripSubjectLine(text);
-      }
+      if (subject) { hasSubject = true; bodyText = stripSubjectLine(text); }
     }
 
     if (!hasSubject && !isMarkdown(text)) {
       previewEl.innerHTML = '<span class="empty-hint">No Markdown detected</span>';
-      copyBtn.disabled = true;
-      lastHtml  = '';
-      lastPlain = '';
+      copyBtn.disabled = true; lastHtml = ''; lastPlain = '';
       setStatus('No Markdown syntax found', 'warn');
       return;
     }
 
-    lastHtml  = marked.parse(bodyText);
-    lastPlain = bodyText;
+    lastHtml = marked.parse(bodyText); lastPlain = bodyText;
     previewEl.innerHTML = lastHtml;
     copyBtn.disabled = false;
   }
@@ -630,16 +555,10 @@
   }
 
   inputEl.addEventListener('paste', function () {
-    setTimeout(async function () {
-      render(inputEl.value);
-      if (lastHtml) await doCopy();
-    }, 0);
+    setTimeout(async function () { render(inputEl.value); if (lastHtml) await doCopy(); }, 0);
   });
-
   inputEl.addEventListener('input', function () { render(inputEl.value); });
-
   copyBtn.addEventListener('click', doCopy);
 </script>
-
 </body>
 </html>

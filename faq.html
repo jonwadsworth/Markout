@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markout — FAQ</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #f4f4f5;
+      --surface:     #ffffff;
+      --surface-2:   #fafafa;
+      --border:      #e2e2e5;
+      --text:        #1a1a1a;
+      --text-muted:  #666;
+      --text-faint:  #bbb;
+      --accent:      #1a56db;
+      --accent-hover:#1447c7;
+      --success:     #166534;
+      --success-bg:  #dcfce7;
+      --success-border: #bbf7d0;
+    }
+
+    [data-theme="dark"] {
+      --bg:          #111113;
+      --surface:     #1c1c1f;
+      --surface-2:   #232326;
+      --border:      #38383d;
+      --text:        #ececec;
+      --text-muted:  #8e8e93;
+      --text-faint:  #48484c;
+      --accent:      #4b8ef5;
+      --accent-hover:#6aa3ff;
+      --success:     #86efac;
+      --success-bg:  #14532d;
+      --success-border: #166534;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ── Nav ─────────────────────────────────────────────── */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .nav-brand {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.03em;
+    }
+
+    .nav-right { display: flex; align-items: center; gap: 8px; }
+
+    .nav-link {
+      padding: 5px 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background 0.12s, color 0.12s;
+    }
+
+    .nav-link:hover { background: var(--border); color: var(--text); }
+
+    .nav-link.primary {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .nav-link.primary:hover { background: var(--accent-hover); }
+
+    #theme-btn {
+      padding: 5px 10px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      font-size: 12px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+
+    #theme-btn:hover { background: var(--border); }
+
+    /* ── Hero ────────────────────────────────────────────── */
+    .hero {
+      text-align: center;
+      padding: 64px 24px 48px;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .hero .sub {
+      font-size: 18px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+
+    .hero-cta {
+      display: inline-block;
+      padding: 10px 24px;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 7px;
+      font-size: 15px;
+      font-weight: 500;
+      transition: background 0.15s;
+    }
+
+    .hero-cta:hover { background: var(--accent-hover); }
+
+    /* ── Content ─────────────────────────────────────────── */
+    .content {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ── Security callout ────────────────────────────────── */
+    .security-box {
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin-bottom: 40px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .security-icon {
+      font-size: 22px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .security-box h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--success);
+      margin-bottom: 4px;
+    }
+
+    .security-box p {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    /* ── FAQ items ───────────────────────────────────────── */
+    .faq-section {
+      margin-bottom: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      overflow: hidden;
+      transition: border-color 0.15s;
+    }
+
+    .faq-section:hover { border-color: var(--accent); }
+
+    .faq-q {
+      padding: 16px 20px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+
+    .faq-q::after {
+      content: '+';
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--text-faint);
+      flex-shrink: 0;
+      margin-left: 12px;
+      transition: transform 0.2s;
+    }
+
+    .faq-section.open .faq-q::after {
+      transform: rotate(45deg);
+    }
+
+    .faq-a {
+      display: none;
+      padding: 0 20px 18px;
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      border-top: 1px solid var(--border);
+    }
+
+    .faq-section.open .faq-a { display: block; }
+
+    .faq-a p + p { margin-top: 10px; }
+
+    .faq-a ol, .faq-a ul {
+      padding-left: 20px;
+      margin: 8px 0;
+    }
+
+    .faq-a li { margin: 4px 0; }
+
+    .faq-a code {
+      background: var(--surface-2);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: ui-monospace, 'Consolas', monospace;
+      font-size: 0.88em;
+    }
+
+    .faq-a a { color: var(--accent); }
+
+    /* ── Section headers ─────────────────────────────────── */
+    .section-heading {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-faint);
+      margin: 36px 0 12px;
+    }
+
+    /* ── GitHub CTA ──────────────────────────────────────── */
+    .github-cta {
+      margin-top: 40px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      padding: 24px;
+      text-align: center;
+    }
+
+    .github-cta h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .github-cta p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+
+    .github-cta .btn-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .gh-btn {
+      display: inline-block;
+      padding: 9px 20px;
+      border-radius: 6px;
+      font-size: 13.5px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background 0.12s, opacity 0.12s;
+    }
+
+    .gh-btn.primary { background: var(--accent); color: #fff; }
+    .gh-btn.primary:hover { background: var(--accent-hover); }
+    .gh-btn.secondary { background: var(--surface-2); border: 1px solid var(--border); color: var(--text); }
+    .gh-btn.secondary:hover { background: var(--border); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-brand">Markout</a>
+  <div class="nav-right">
+    <button id="theme-btn">Dark</button>
+    <a href="https://github.com/jonwadsworth/Markout" target="_blank" class="nav-link">GitHub</a>
+    <a href="/" class="nav-link primary">Open Markout</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <h1>Markout</h1>
+  <p class="sub">Paste Markdown. Send formatted email.</p>
+  <a href="/" class="hero-cta">Try it now</a>
+</div>
+
+<div class="content">
+
+  <!-- Security callout - prominent, first thing after hero -->
+  <div class="security-box">
+    <div class="security-icon">&#x1F512;</div>
+    <div>
+      <h3>Your data never leaves your browser</h3>
+      <p>Markout processes everything locally using JavaScript. Your text is never sent to any server &mdash; not ours, not anyone else&rsquo;s. The only external request is loading the Markdown parser from a CDN when the page first opens. After that, it works entirely offline. Disconnect from the internet and try it &mdash; it still works.</p>
+    </div>
+  </div>
+
+  <p class="section-heading">Frequently asked questions</p>
+
+  <div class="faq-section open">
+    <div class="faq-q">What is Markout?</div>
+    <div class="faq-a">
+      <p>Markout is a browser-based tool that converts Markdown text to rich text and copies it to your clipboard in a format that Outlook (and most other email clients) renders correctly.</p>
+      <p>Paste Markdown in &rarr; Markout converts it &rarr; paste into Outlook with full formatting intact: bold, italics, bullet lists, numbered lists, headers, code blocks, tables.</p>
+    </div>
+  </div>
+
+  <div class="faq-section">
+    <div class="faq-q">Why would I need this?</div>
+    <div class="faq-a">
+      <p>AI assistants (ChatGPT, Claude, Copilot, Gemini) draft responses in Markdown. It looks great in the AI interface, but when you copy it and paste it directly into Outlook, the formatting disappears &mdash; you get raw syntax like <code>**bold**</code>, <code>- bullet point</code>, <code># Heading</code> instead of the intended formatting.</p>
+      <p>Markout bridges that gap. It converts the Markdown to rich text so Outlook sees formatted content when you paste.</p>
+    </div>
+  </div>
+
+  <div class="faq-section">
+    <div class="faq-q">How do I use it?</div>
+    <div class="faq-a">
+      <ol>
+        <li><strong>Optional:</strong> Check &ldquo;Separate subject&rdquo; if your content has a subject line you want to handle separately.</li>
+        <li>Copy your Markdown text (from ChatGPT, Claude, wherever).</li>
+        <li>Paste it into the left panel in Markout.</li>
+        <li>The rich text is automatically copied to your clipboard.</li>
+        <li>Switch to Outlook and paste. Done.</li>
+      </ol>
+      <p>No button to click. Paste in, clipboard updates, paste out.</p>
+    </div>
+  </div>
+
+  <div class="faq-section">
+    <div class="faq-q">What is the &ldquo;Separate subject&rdquo; feature?</div>
+    <div class="faq-a">
+      <p>When checked, Markout looks for a subject line at the very top of your pasted content &mdash; either a Markdown heading (<code># My subject</code>) or a plain-text email prefix (<code>Subject: My subject</code>).</p>
+      <p>If found, the subject appears in a pill in the header with its own Copy button, and it&rsquo;s stripped from the rich text that goes to your clipboard. That way you can paste the body into Outlook first, then go back to Markout to copy just the subject line for the subject field.</p>
+    </div>
+  </div>
+
+  <div class="faq-section">
+    <div class="faq-q">Does it work with Gmail, Apple Mail, or other apps?</div>
+    <div class="faq-a">
+      <p>Yes. Markout writes rich text (HTML) to the clipboard, which any app that accepts formatted paste can read. It was designed with Outlook in mind but works with Gmail, Apple Mail, Word, Google Docs, Notion, and more.</p>
+    </div>
+  </div>
+
+  <div class="faq-section">
+    <div class="faq-q">Is it free?</div>
+    <div class="faq-a">
+      <p>Yes, completely free. No account, no subscription, no ads. Markout is an open-source tool hosted as a public service.</p>
+    </div>
+  </div>
+
+  <div class="faq-section">
+    <div class="faq-q">Can I self-host it?</div>
+    <div class="faq-a">
+      <p>Yes. Markout is a single HTML file with no build step and no backend. To self-host:</p>
+      <ol>
+        <li>Clone or download <a href="https://github.com/jonwadsworth/Markout" target="_blank">github.com/jonwadsworth/Markout</a></li>
+        <li>Serve <code>index.html</code> from any static file host, or just open it locally in a browser</li>
+      </ol>
+      <p>Note: the clipboard write API requires HTTPS or localhost, so <code>file://</code> won&rsquo;t work. Use a local server (<code>python -m http.server</code>) or deploy to any static host.</p>
+    </div>
+  </div>
+
+  <!-- GitHub CTA -->
+  <div class="github-cta">
+    <h3>Built in the open</h3>
+    <p>Markout is open source. Found a bug? Have an idea? Contributions and feature requests are welcome.</p>
+    <div class="btn-row">
+      <a href="https://github.com/jonwadsworth/Markout/issues/new" target="_blank" class="gh-btn primary">Request a feature / report a bug</a>
+      <a href="https://github.com/jonwadsworth/Markout" target="_blank" class="gh-btn secondary">View source on GitHub</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  var isDark = localStorage.getItem('markout_theme') === 'dark';
+  var themeBtn = document.getElementById('theme-btn');
+
+  function applyTheme(dark) {
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+    themeBtn.textContent = dark ? 'Light' : 'Dark';
+  }
+
+  applyTheme(isDark);
+
+  themeBtn.addEventListener('click', function () {
+    isDark = !isDark;
+    localStorage.setItem('markout_theme', isDark ? 'dark' : 'light');
+    applyTheme(isDark);
+  });
+
+  // Accordion
+  document.querySelectorAll('.faq-q').forEach(function (q) {
+    q.addEventListener('click', function () {
+      var section = q.parentElement;
+      var isOpen = section.classList.contains('open');
+      // Close all
+      document.querySelectorAll('.faq-section').forEach(function (s) { s.classList.remove('open'); });
+      if (!isOpen) section.classList.add('open');
+    });
+  });
+</script>
+</body>
+</html>
