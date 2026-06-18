@@ -17,7 +17,6 @@
       overflow: hidden;
     }
 
-    /* ── Subject strip (top of page) ────────────────────── */
     .subject-strip {
       background: #fff;
       border-bottom: 1px solid #e8e8e8;
@@ -102,7 +101,6 @@
     #copy-subject-btn:hover { background: #e4e4e4; }
     #copy-subject-btn:disabled { opacity: 0.4; cursor: default; }
 
-    /* ── Header ─────────────────────────────────────────── */
     header {
       background: #fff;
       border-bottom: 1px solid #e0e0e0;
@@ -114,11 +112,7 @@
       flex-shrink: 0;
     }
 
-    .brand {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-    }
+    .brand { display: flex; align-items: baseline; gap: 10px; }
 
     .brand h1 {
       font-size: 16px;
@@ -127,10 +121,7 @@
       letter-spacing: -0.02em;
     }
 
-    .brand .tagline {
-      font-size: 12px;
-      color: #aaa;
-    }
+    .brand .tagline { font-size: 12px; color: #aaa; }
 
     #copy-btn {
       padding: 6px 14px;
@@ -147,12 +138,7 @@
     #copy-btn:hover { background: #1447c7; }
     #copy-btn:disabled { opacity: 0.4; cursor: default; }
 
-    /* ── Workspace ───────────────────────────────────────── */
-    .workspace {
-      flex: 1;
-      display: flex;
-      overflow: hidden;
-    }
+    .workspace { flex: 1; display: flex; overflow: hidden; }
 
     .pane {
       flex: 1;
@@ -162,9 +148,7 @@
       background: #fff;
     }
 
-    .pane + .pane {
-      border-left: 1px solid #e0e0e0;
-    }
+    .pane + .pane { border-left: 1px solid #e0e0e0; }
 
     .pane-label {
       font-size: 10px;
@@ -194,29 +178,16 @@
 
     textarea::placeholder { color: #ccc; }
 
-    .preview-wrap {
-      flex: 1;
-      overflow-y: auto;
-      padding: 18px 22px;
-    }
+    .preview-wrap { flex: 1; overflow-y: auto; padding: 18px 22px; }
 
-    /* ── Preview typography ──────────────────────────────── */
-    .preview-wrap .empty-hint {
-      color: #ccc;
-      font-size: 13px;
-    }
+    .preview-wrap .empty-hint { color: #ccc; font-size: 13px; }
 
     .preview-wrap h1,
     .preview-wrap h2,
     .preview-wrap h3,
     .preview-wrap h4,
     .preview-wrap h5,
-    .preview-wrap h6 {
-      margin: 1em 0 0.4em;
-      font-weight: 600;
-      line-height: 1.3;
-      color: #111;
-    }
+    .preview-wrap h6 { margin: 1em 0 0.4em; font-weight: 600; line-height: 1.3; color: #111; }
     .preview-wrap h1 { font-size: 1.7em; }
     .preview-wrap h2 { font-size: 1.35em; }
     .preview-wrap h3 { font-size: 1.15em; }
@@ -229,7 +200,6 @@
     .preview-wrap ol { margin: 0.5em 0; padding-left: 22px; }
     .preview-wrap li { margin: 0.2em 0; font-size: 14px; color: #333; line-height: 1.65; }
     .preview-wrap li + li { margin-top: 0.15em; }
-
     .preview-wrap strong { font-weight: 600; }
     .preview-wrap em { font-style: italic; }
 
@@ -251,12 +221,7 @@
       margin: 0.8em 0;
     }
 
-    .preview-wrap pre code {
-      background: none;
-      padding: 0;
-      color: #222;
-      font-size: 13px;
-    }
+    .preview-wrap pre code { background: none; padding: 0; color: #222; font-size: 13px; }
 
     .preview-wrap blockquote {
       border-left: 3px solid #d0d0d0;
@@ -265,35 +230,12 @@
       color: #666;
     }
 
-    .preview-wrap table {
-      border-collapse: collapse;
-      margin: 0.8em 0;
-      font-size: 14px;
-      width: 100%;
-    }
-
-    .preview-wrap th,
-    .preview-wrap td {
-      border: 1px solid #ddd;
-      padding: 6px 12px;
-      text-align: left;
-    }
-
-    .preview-wrap th {
-      background: #f5f5f5;
-      font-weight: 600;
-      color: #222;
-    }
-
-    .preview-wrap hr {
-      border: none;
-      border-top: 1px solid #e0e0e0;
-      margin: 1.2em 0;
-    }
-
+    .preview-wrap table { border-collapse: collapse; margin: 0.8em 0; font-size: 14px; width: 100%; }
+    .preview-wrap th, .preview-wrap td { border: 1px solid #ddd; padding: 6px 12px; text-align: left; }
+    .preview-wrap th { background: #f5f5f5; font-weight: 600; color: #222; }
+    .preview-wrap hr { border: none; border-top: 1px solid #e0e0e0; margin: 1.2em 0; }
     .preview-wrap a { color: #1a56db; text-decoration: underline; }
 
-    /* ── Status bar ──────────────────────────────────────── */
     .status-bar {
       height: 28px;
       display: flex;
@@ -312,7 +254,6 @@
     #status-msg.warn    { color: #e65100; }
     #status-msg.error   { color: #c62828; }
 
-    /* ── Toast ───────────────────────────────────────────── */
     #toast {
       position: fixed;
       bottom: 44px;
@@ -330,11 +271,7 @@
       white-space: nowrap;
     }
 
-    #toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     #toast.success { background: #2e7d32; }
     #toast.warn    { background: #e65100; }
     #toast.error   { background: #c62828; }
@@ -342,7 +279,6 @@
 </head>
 <body>
 
-<!-- ── Subject strip ── -->
 <div class="subject-strip">
   <label>
     <input type="checkbox" id="remove-subject-cb">
@@ -356,7 +292,6 @@
   </div>
 </div>
 
-<!-- ── Header ── -->
 <header>
   <div class="brand">
     <h1>Markout</h1>
@@ -365,7 +300,6 @@
   <button id="copy-btn" disabled>Copy rich text</button>
 </header>
 
-<!-- ── Workspace ── -->
 <div class="workspace">
   <div class="pane">
     <div class="pane-label">Markdown</div>
@@ -387,30 +321,29 @@
 <div id="toast"></div>
 
 <script>
-  const inputEl       = document.getElementById('input');
-  const previewEl     = document.getElementById('preview');
-  const statusEl      = document.getElementById('status-msg');
-  const countEl       = document.getElementById('word-count');
-  const copyBtn       = document.getElementById('copy-btn');
-  const toastEl       = document.getElementById('toast');
-  const removeCb      = document.getElementById('remove-subject-cb');
-  const subjectBox    = document.getElementById('subject-box');
-  const subjectText   = document.getElementById('subject-text');
-  const copySubjectBtn = document.getElementById('copy-subject-btn');
-  const subjectDivider = document.getElementById('subject-divider');
+  var inputEl        = document.getElementById('input');
+  var previewEl      = document.getElementById('preview');
+  var statusEl       = document.getElementById('status-msg');
+  var countEl        = document.getElementById('word-count');
+  var copyBtn        = document.getElementById('copy-btn');
+  var toastEl        = document.getElementById('toast');
+  var removeCb       = document.getElementById('remove-subject-cb');
+  var subjectBox     = document.getElementById('subject-box');
+  var subjectTextEl  = document.getElementById('subject-text');
+  var copySubjectBtn = document.getElementById('copy-subject-btn');
+  var subjectDivider = document.getElementById('subject-divider');
 
-  const LS_KEY = 'markout_remove_subject';
+  var LS_KEY = 'markout_remove_subject';
 
   marked.setOptions({ breaks: true, gfm: true });
 
-  // ── Restore preference ────────────────────────────────
+  // Restore saved preference
   removeCb.checked = localStorage.getItem(LS_KEY) === '1';
   updateSubjectUI();
 
-  removeCb.addEventListener('change', function() {
+  removeCb.addEventListener('change', function () {
     localStorage.setItem(LS_KEY, removeCb.checked ? '1' : '0');
     updateSubjectUI();
-    // Re-render with the current content so the preview reflects the change
     render(inputEl.value);
   });
 
@@ -421,7 +354,7 @@
   }
 
   // ── Markdown detection ────────────────────────────────
-  const MD_PATTERNS = [
+  var MD_PATTERNS = [
     /^#{1,6}\s/m,
     /\*\*[^*\n]+\*\*/,
     /\*[^*\n]+\*/,
@@ -437,27 +370,26 @@
   ];
 
   function isMarkdown(text) {
-    return MD_PATTERNS.some(function(p) { return p.test(text); });
+    return MD_PATTERNS.some(function (p) { return p.test(text); });
   }
 
   // ── Subject extraction ────────────────────────────────
-  // Detects a heading on the very first non-empty line only.
+  // Matches "# Heading", "Subject: text", or "SUBJECT: text" on the
+  // very first non-empty line only.
   function extractSubject(text) {
     var lines = text.split('\n');
     for (var i = 0; i < lines.length; i++) {
       var line = lines[i];
       if (!line.trim()) continue;
-      var m = line.match(/^#{1,3}\s+(.+)/);
+      var m = line.match(/^#{1,3}\s+(.+)/) || line.match(/^subject:\s*(.+)/i);
       if (m) return m[1].trim();
-      break; // first non-empty line is not a heading
+      break;
     }
     return null;
   }
 
-  // Returns the text with the subject line (and any immediately following
-  // blank lines) removed.
   function stripSubjectLine(text) {
-    return text.replace(/^([ \t]*\n)*#{1,3} [^\n]+\n?(\n)*/, '').trimStart();
+    return text.replace(/^([ \t]*\n)*(#{1,3} [^\n]+|subject:[^\n]+)\n?(\n)*/i, '').trimStart();
   }
 
   // ── Subject display ───────────────────────────────────
@@ -466,21 +398,21 @@
   function setSubject(subject) {
     currentSubject = subject;
     if (subject) {
-      subjectText.textContent = subject;
-      subjectText.classList.remove('empty');
+      subjectTextEl.textContent = subject;
+      subjectTextEl.classList.remove('empty');
       copySubjectBtn.disabled = false;
     } else {
-      subjectText.textContent = 'none detected';
-      subjectText.classList.add('empty');
+      subjectTextEl.textContent = 'none detected';
+      subjectTextEl.classList.add('empty');
       copySubjectBtn.disabled = true;
     }
   }
 
-  copySubjectBtn.addEventListener('click', function() {
+  copySubjectBtn.addEventListener('click', function () {
     if (!currentSubject) return;
-    navigator.clipboard.writeText(currentSubject).then(function() {
+    navigator.clipboard.writeText(currentSubject).then(function () {
       showToast('Subject copied ✓', 'success', 1800);
-    }).catch(function() {
+    }).catch(function () {
       showToast('Copy failed', 'error', 2500);
     });
   });
@@ -488,38 +420,36 @@
   // ── Toast ─────────────────────────────────────────────
   var toastTimer;
   function showToast(msg, type, ms) {
-    type = type || 'success';
-    ms = ms || 2400;
     toastEl.textContent = msg;
-    toastEl.className = 'show ' + type;
+    toastEl.className = 'show ' + (type || 'success');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function() { toastEl.className = ''; }, ms);
+    toastTimer = setTimeout(function () { toastEl.className = ''; }, ms || 2400);
   }
 
-  // ── Status ────────────────────────────────────────────
   function setStatus(msg, type) {
     statusEl.textContent = msg;
     statusEl.className = type || '';
   }
 
   // ── Clipboard ─────────────────────────────────────────
-  async function copyAsRichText(html, plainText) {
-    var htmlBlob  = new Blob([html],      { type: 'text/html'  });
-    var textBlob  = new Blob([plainText], { type: 'text/plain' });
-    var item = new ClipboardItem({ 'text/html': htmlBlob, 'text/plain': textBlob });
+  async function copyAsRichText(html, plain) {
+    var item = new ClipboardItem({
+      'text/html':  new Blob([html],  { type: 'text/html'  }),
+      'text/plain': new Blob([plain], { type: 'text/plain' })
+    });
     await navigator.clipboard.write([item]);
   }
 
-  // ── Render + copy ──────────────────────────────────────
-  var lastHtml      = '';
-  var lastPlainText = '';
+  // ── Render ────────────────────────────────────────────
+  var lastHtml = '';
+  var lastPlain = '';
 
   function render(text) {
     if (!text.trim()) {
       previewEl.innerHTML = '<span class="empty-hint">Preview appears here after you paste</span>';
       copyBtn.disabled = true;
       lastHtml = '';
-      lastPlainText = '';
+      lastPlain = '';
       countEl.textContent = '';
       setStatus('Ready');
       if (removeCb.checked) setSubject(null);
@@ -529,28 +459,30 @@
     var words = text.trim().split(/\s+/).filter(Boolean).length;
     countEl.textContent = words + ' word' + (words === 1 ? '' : 's');
 
-    if (!isMarkdown(text)) {
-      previewEl.innerHTML = '<span class="empty-hint">No Markdown detected</span>';
-      copyBtn.disabled = true;
-      lastHtml = '';
-      lastPlainText = '';
-      setStatus('No Markdown syntax found', 'warn');
-      if (removeCb.checked) setSubject(null);
-      return;
-    }
-
-    // Subject handling
+    // Subject extraction runs BEFORE the Markdown gate so that plain-text
+    // emails with a "Subject: ..." first line are still processed.
     var bodyText = text;
+    var hasSubject = false;
     if (removeCb.checked) {
       var subject = extractSubject(text);
       setSubject(subject);
       if (subject) {
+        hasSubject = true;
         bodyText = stripSubjectLine(text);
       }
     }
 
-    lastHtml      = marked.parse(bodyText);
-    lastPlainText = bodyText;
+    if (!hasSubject && !isMarkdown(text)) {
+      previewEl.innerHTML = '<span class="empty-hint">No Markdown detected</span>';
+      copyBtn.disabled = true;
+      lastHtml = '';
+      lastPlain = '';
+      setStatus('No Markdown syntax found', 'warn');
+      return;
+    }
+
+    lastHtml  = marked.parse(bodyText);
+    lastPlain = bodyText;
     previewEl.innerHTML = lastHtml;
     copyBtn.disabled = false;
   }
@@ -558,7 +490,7 @@
   async function doCopy() {
     if (!lastHtml) return;
     try {
-      await copyAsRichText(lastHtml, lastPlainText);
+      await copyAsRichText(lastHtml, lastPlain);
       setStatus('Rich text copied — paste into Outlook', 'success');
       showToast('Copied as rich text ✓');
     } catch (err) {
@@ -567,14 +499,14 @@
     }
   }
 
-  inputEl.addEventListener('paste', function() {
-    setTimeout(async function() {
+  inputEl.addEventListener('paste', function () {
+    setTimeout(async function () {
       render(inputEl.value);
       if (lastHtml) await doCopy();
     }, 0);
   });
 
-  inputEl.addEventListener('input', function() { render(inputEl.value); });
+  inputEl.addEventListener('input', function () { render(inputEl.value); });
 
   copyBtn.addEventListener('click', doCopy);
 </script>
