@@ -1,168 +1,167 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MarkOut — Paste Markdown. Send formatted email.</title>
+  <title>MarkOut</title>
   <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:            #f4f4f5;
-      --surface:       #ffffff;
-      --surface-2:     #fafafa;
-      --border:        #e2e2e5;
-      --border-subtle: #eeeeef;
-      --text:          #1a1a1a;
-      --text-muted:    #888;
-      --text-faint:    #bbb;
-      --accent:        #1a56db;
-      --accent-hover:  #1447c7;
-      --success:       #2e7d32;
-      --warn:          #e65100;
-      --error:         #c62828;
+      --bg:        #f5f5f5;
+      --surface:   #ffffff;
+      --surface2:  #fafafa;
+      --border:    #e0e0e0;
+      --border2:   #efefef;
+      --text:      #111;
+      --text2:     #333;
+      --text3:     #666;
+      --muted:     #aaa;
+      --muted2:    #bbb;
+      --muted3:    #ccc;
+      --accent:    #1a56db;
+      --accent-h:  #1447c7;
+      --code-bg:   #f0f0f0;
+      --pre-bg:    #f6f8fa;
+      --pre-bdr:   #e8e8e8;
+      --th-bg:     #f5f5f5;
+      --pill-bg:   #e8f0fd;
+      --pill-text: #1a3a8f;
     }
 
     [data-theme="dark"] {
-      --bg:            #111113;
-      --surface:       #1c1c1f;
-      --surface-2:     #232326;
-      --border:        #38383d;
-      --border-subtle: #2a2a2e;
-      --text:          #ececec;
-      --text-muted:    #8e8e93;
-      --text-faint:    #48484c;
-      --accent:        #4b8ef5;
-      --accent-hover:  #6aa3ff;
-      --success:       #66bb6a;
-      --warn:          #ffa726;
-      --error:         #ef5350;
+      --bg:        #1a1a1a;
+      --surface:   #242424;
+      --surface2:  #1e1e1e;
+      --border:    #333;
+      --border2:   #2c2c2c;
+      --text:      #f0f0f0;
+      --text2:     #d0d0d0;
+      --text3:     #999;
+      --muted:     #666;
+      --muted2:    #555;
+      --muted3:    #444;
+      --accent:    #4b80f0;
+      --accent-h:  #3a6de0;
+      --code-bg:   #2d2d2d;
+      --pre-bg:    #1e1e2e;
+      --pre-bdr:   #333;
+      --th-bg:     #2a2a2a;
+      --pill-bg:   #1e2d50;
+      --pill-text: #7ab0ff;
     }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: var(--bg);
-      color: var(--text);
       height: 100vh;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      transition: background 0.2s, color 0.2s;
+      color: var(--text);
     }
 
-    /* ── Header ──────────────────────────────────────────── */
     header {
-      position: relative;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
-      padding: 0 16px;
-      height: 60px;
+      padding: 0 20px;
+      height: 52px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-shrink: 0;
-      transition: background 0.2s, border-color 0.2s;
+      position: relative;
+      gap: 10px;
     }
 
-    /* Left: brand */
     .brand {
       display: flex;
-      flex-direction: column;
-      justify-content: center;
+      align-items: baseline;
+      gap: 10px;
       flex-shrink: 0;
-      line-height: 1.2;
     }
 
     .brand-name {
       font-size: 22px;
       font-weight: 800;
       color: var(--text);
-      letter-spacing: -0.04em;
+      letter-spacing: -0.03em;
     }
+
+    .brand-name span { color: var(--accent); }
 
     .brand-tagline {
-      font-size: 11px;
-      color: var(--text-faint);
-      letter-spacing: 0.01em;
+      font-size: 12px;
+      color: var(--muted);
     }
 
-    /* Center: subject pill — absolute so it stays truly centered */
     #subject-area {
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      max-width: 38%;
       display: flex;
       align-items: center;
+      gap: 8px;
+      max-width: 40%;
+      opacity: 0;
       pointer-events: none;
+      transition: opacity 0.2s;
     }
 
-    #subject-pill {
-      display: none;
-      align-items: center;
-      gap: 7px;
-      background: var(--accent);
-      color: #fff;
-      border-radius: 6px;
-      padding: 5px 11px;
-      max-width: 100%;
-      min-width: 0;
-      pointer-events: all;
-    }
-
-    #subject-pill.visible { display: flex; }
-
-    #subject-pill.flash {
-      animation: pillAppear 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    #subject-area.visible {
+      opacity: 1;
+      pointer-events: auto;
+      animation: pillAppear 0.35s ease;
     }
 
     @keyframes pillAppear {
-      0%   { opacity: 0; transform: translateY(-6px) scale(0.95); }
-      60%  { opacity: 1; transform: translateY(1px)  scale(1.02); }
-      100% { opacity: 1; transform: translateY(0)    scale(1);    }
+      0%   { opacity: 0; transform: translateX(-50%) scale(0.92); }
+      60%  { opacity: 1; transform: translateX(-50%) scale(1.04); }
+      100% { opacity: 1; transform: translateX(-50%) scale(1); }
     }
 
     #subject-label {
-      font-size: 9px;
-      font-weight: 800;
+      font-size: 11px;
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
-      opacity: 0.7;
+      letter-spacing: 0.08em;
+      color: var(--muted);
       white-space: nowrap;
-      flex-shrink: 0;
     }
 
-    #subject-value {
-      font-size: 12.5px;
+    #subject-pill {
+      background: var(--pill-bg);
+      color: var(--pill-text);
+      font-size: 13px;
       font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      min-width: 0;
+      max-width: 280px;
     }
 
     #copy-subject-btn {
-      padding: 2px 8px;
-      background: rgba(255,255,255,0.18);
-      border: 1px solid rgba(255,255,255,0.28);
-      border-radius: 3px;
-      font-size: 11px;
-      font-weight: 600;
+      padding: 3px 10px;
+      background: var(--accent);
       color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 500;
       cursor: pointer;
       white-space: nowrap;
       flex-shrink: 0;
-      transition: background 0.1s;
     }
 
-    #copy-subject-btn:hover { background: rgba(255,255,255,0.3); }
+    #copy-subject-btn:hover { background: var(--accent-h); }
 
-    /* Right: actions */
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       flex-shrink: 0;
     }
 
@@ -171,56 +170,56 @@
       align-items: center;
       gap: 5px;
       font-size: 12px;
-      color: var(--text-muted);
+      color: var(--muted);
       cursor: pointer;
       user-select: none;
       white-space: nowrap;
-      padding: 4px 8px;
     }
 
     .subject-toggle input[type="checkbox"] {
-      width: 13px;
-      height: 13px;
-      cursor: pointer;
+      width: 14px;
+      height: 14px;
       accent-color: var(--accent);
-    }
-
-    .header-link {
-      padding: 5px 10px;
-      font-size: 12.5px;
-      color: var(--text-muted);
-      text-decoration: none;
-      border-radius: 5px;
-      transition: background 0.12s, color 0.12s;
-      white-space: nowrap;
-    }
-
-    .header-link:hover {
-      background: var(--border);
-      color: var(--text);
+      cursor: pointer;
     }
 
     .header-sep {
       width: 1px;
-      height: 20px;
+      height: 18px;
       background: var(--border);
-      margin: 0 2px;
-      flex-shrink: 0;
+    }
+
+    .header-link {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 5px 9px;
+      border-radius: 5px;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+
+    .header-link:hover {
+      background: var(--border2);
+      color: var(--text);
     }
 
     #theme-btn {
-      padding: 5px 10px;
-      background: transparent;
+      padding: 5px 9px;
+      background: none;
       border: 1px solid var(--border);
       border-radius: 5px;
-      font-size: 12px;
-      color: var(--text-muted);
+      font-size: 13px;
+      color: var(--muted);
       cursor: pointer;
-      white-space: nowrap;
-      transition: background 0.12s;
+      transition: background 0.15s, color 0.15s;
+      line-height: 1;
     }
 
-    #theme-btn:hover { background: var(--border); }
+    #theme-btn:hover {
+      background: var(--border2);
+      color: var(--text);
+    }
 
     #copy-btn {
       padding: 6px 14px;
@@ -231,15 +230,18 @@
       font-size: 13px;
       font-weight: 500;
       cursor: pointer;
-      white-space: nowrap;
       transition: background 0.15s, opacity 0.15s;
+      white-space: nowrap;
     }
 
-    #copy-btn:hover { background: var(--accent-hover); }
-    #copy-btn:disabled { opacity: 0.35; cursor: default; }
+    #copy-btn:hover { background: var(--accent-h); }
+    #copy-btn:disabled { opacity: 0.4; cursor: default; }
 
-    /* ── Workspace ───────────────────────────────────────── */
-    .workspace { flex: 1; display: flex; overflow: hidden; }
+    .workspace {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
 
     .pane {
       flex: 1;
@@ -247,7 +249,6 @@
       flex-direction: column;
       overflow: hidden;
       background: var(--surface);
-      transition: background 0.2s;
     }
 
     .pane + .pane { border-left: 1px solid var(--border); }
@@ -257,10 +258,10 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: var(--text-faint);
+      color: var(--muted2);
       padding: 6px 18px;
-      background: var(--surface-2);
-      border-bottom: 1px solid var(--border-subtle);
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border2);
       flex-shrink: 0;
     }
 
@@ -274,16 +275,19 @@
       font-size: 13.5px;
       line-height: 1.65;
       resize: none;
-      color: var(--text);
+      color: var(--text2);
       background: var(--surface);
-      transition: background 0.2s, color 0.2s;
     }
 
-    textarea::placeholder { color: var(--text-faint); }
+    textarea::placeholder { color: var(--muted3); }
 
-    .preview-wrap { flex: 1; overflow-y: auto; padding: 18px 22px; }
+    .preview-wrap {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px 22px;
+    }
 
-    .preview-wrap .empty-hint { color: var(--text-faint); font-size: 13px; }
+    .preview-wrap .empty-hint { color: var(--muted3); font-size: 13px; }
 
     .preview-wrap h1,.preview-wrap h2,.preview-wrap h3,
     .preview-wrap h4,.preview-wrap h5,.preview-wrap h6 {
@@ -293,96 +297,86 @@
     .preview-wrap h2 { font-size: 1.35em; }
     .preview-wrap h3 { font-size: 1.15em; }
     .preview-wrap h1:first-child,.preview-wrap h2:first-child,.preview-wrap h3:first-child { margin-top: 0; }
-    .preview-wrap p { margin: 0.55em 0; color: var(--text); font-size: 14px; line-height: 1.65; }
+
+    .preview-wrap p { margin: 0.55em 0; color: var(--text2); font-size: 14px; line-height: 1.65; }
     .preview-wrap ul,.preview-wrap ol { margin: 0.5em 0; padding-left: 22px; }
-    .preview-wrap li { margin: 0.2em 0; font-size: 14px; color: var(--text); line-height: 1.65; }
+    .preview-wrap li { margin: 0.2em 0; font-size: 14px; color: var(--text2); line-height: 1.65; }
+    .preview-wrap li + li { margin-top: 0.15em; }
     .preview-wrap strong { font-weight: 600; }
     .preview-wrap em { font-style: italic; }
+
     .preview-wrap code {
-      background: var(--surface-2); padding: 1px 5px; border-radius: 3px;
+      background: var(--code-bg); padding: 1px 5px; border-radius: 3px;
       font-family: ui-monospace,'Consolas',monospace; font-size: 0.88em; color: #d63384;
     }
-    [data-theme="dark"] .preview-wrap code { color: #f472b6; }
+    [data-theme="dark"] .preview-wrap code { color: #f78fb3; }
+
     .preview-wrap pre {
-      background: var(--surface-2); border: 1px solid var(--border);
-      border-radius: 5px; padding: 12px 16px; overflow-x: auto; margin: 0.8em 0;
+      background: var(--pre-bg); border: 1px solid var(--pre-bdr); border-radius: 5px;
+      padding: 12px 16px; overflow-x: auto; margin: 0.8em 0;
     }
-    .preview-wrap pre code { background: none; padding: 0; color: var(--text); font-size: 13px; }
+    .preview-wrap pre code { background: none; padding: 0; color: var(--text2); font-size: 13px; }
+
     .preview-wrap blockquote {
-      border-left: 3px solid var(--border); margin: 0.7em 0;
-      padding: 2px 0 2px 16px; color: var(--text-muted);
+      border-left: 3px solid var(--muted3); margin: 0.7em 0; padding: 2px 0 2px 16px; color: var(--text3);
     }
+
     .preview-wrap table { border-collapse: collapse; margin: 0.8em 0; font-size: 14px; width: 100%; }
     .preview-wrap th,.preview-wrap td { border: 1px solid var(--border); padding: 6px 12px; text-align: left; }
-    .preview-wrap th { background: var(--surface-2); font-weight: 600; }
+    .preview-wrap th { background: var(--th-bg); font-weight: 600; color: var(--text); }
     .preview-wrap hr { border: none; border-top: 1px solid var(--border); margin: 1.2em 0; }
     .preview-wrap a { color: var(--accent); text-decoration: underline; }
 
-    /* ── Status bar ──────────────────────────────────────── */
     .status-bar {
       height: 28px; display: flex; align-items: center; justify-content: space-between;
-      padding: 0 16px; background: var(--surface-2); border-top: 1px solid var(--border);
-      flex-shrink: 0; font-size: 11.5px; color: var(--text-faint);
+      padding: 0 16px; background: var(--surface2); border-top: 1px solid var(--border);
+      flex-shrink: 0; font-size: 11.5px; color: var(--muted);
     }
 
     #status-msg { transition: color 0.2s; }
-    #status-msg.success { color: var(--success); font-weight: 500; }
-    #status-msg.warn    { color: var(--warn); }
-    #status-msg.error   { color: var(--error); }
+    #status-msg.success { color: #2e7d32; font-weight: 500; }
+    #status-msg.warn    { color: #e65100; }
+    #status-msg.error   { color: #c62828; }
+    [data-theme="dark"] #status-msg.success { color: #66bb6a; }
+    [data-theme="dark"] #status-msg.warn    { color: #ffa040; }
+    [data-theme="dark"] #status-msg.error   { color: #ef5350; }
 
-    /* ── Toast ───────────────────────────────────────────── */
     #toast {
       position: fixed; bottom: 44px; left: 50%;
       transform: translateX(-50%) translateY(8px);
       padding: 9px 18px; border-radius: 6px; font-size: 13px; font-weight: 500;
-      color: #fff; opacity: 0; transition: opacity 0.18s, transform 0.18s;
+      color: #fff; opacity: 0; transition: opacity 0.18s ease, transform 0.18s ease;
       pointer-events: none; z-index: 200; white-space: nowrap;
     }
     #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    #toast.success { background: var(--success); }
-    #toast.warn    { background: var(--warn); }
-    #toast.error   { background: var(--error); }
-  
-    /* ── Mobile ──────────────────────────────────────────── */
+    #toast.success { background: #2e7d32; }
+    #toast.warn    { background: #e65100; }
+    #toast.error   { background: #c62828; }
+
     @media (max-width: 600px) {
-      /* Header: shrink and drop non-essential items */
-      header { height: auto; min-height: 48px; padding: 8px 12px; flex-wrap: wrap; gap: 6px; position: static; }
-
-      /* Brand: smaller, no tagline */
-      .brand-name { font-size: 17px; }
+      header {
+        height: auto; min-height: 48px; padding: 8px 12px;
+        flex-wrap: wrap; gap: 6px; position: static;
+      }
+      .brand-name { font-size: 18px; }
       .brand-tagline { display: none; }
-
-      /* Subject area: not absolutely centered on mobile — hide it.
-         Clipboard still updates; subject pill is a desktop nicety. */
       #subject-area { display: none; }
-
-      /* Compress actions row */
-      .header-actions { gap: 4px; }
-
-      /* Show checkbox only — hide the label text */
+      .header-actions { gap: 6px; }
       .subject-toggle { font-size: 0; padding: 2px 4px; }
       .subject-toggle input[type="checkbox"] { width: 16px; height: 16px; font-size: initial; }
-
-      /* Hide GitHub (accessible from FAQ page) and separators */
       .header-link[href*="github"] { display: none; }
       .header-sep { display: none; }
-
-      /* Tighten buttons */
       .header-link { padding: 5px 8px; font-size: 12px; }
       #theme-btn { padding: 5px 8px; font-size: 12px; }
       #copy-btn { padding: 6px 10px; font-size: 12px; }
     }
 
     @media (max-width: 600px) {
-      /* Workspace: stack panes vertically */
       .workspace { flex-direction: column; }
       .pane + .pane { border-left: none; border-top: 1px solid var(--border); }
-
-      /* Textarea gets 55% of vertical space, preview 45% */
       .pane:first-child { flex: 55; }
       .pane:last-child  { flex: 45; }
-
-      textarea { font-size: 16px; /* prevent iOS auto-zoom on focus */ padding: 12px; }
+      textarea { font-size: 16px; padding: 12px; }
       .preview-wrap { padding: 12px 14px; }
     }
   </style>
@@ -390,32 +384,26 @@
 <body>
 
 <header>
-  <!-- Left: brand -->
   <div class="brand">
-    <div class="brand-name">MarkOut</div>
-    <div class="brand-tagline">Paste Markdown. Send formatted email.</div>
+    <span class="brand-name">Mark<span>Out</span></span>
+    <span class="brand-tagline">Paste Markdown — copy rich text into Outlook</span>
   </div>
 
-  <!-- Center: subject pill -->
   <div id="subject-area">
-    <div id="subject-pill">
-      <span id="subject-label">Subject</span>
-      <span id="subject-value"></span>
-      <button id="copy-subject-btn">Copy</button>
-    </div>
+    <span id="subject-label">Subject</span>
+    <span id="subject-pill"></span>
+    <button id="copy-subject-btn">Copy</button>
   </div>
 
-  <!-- Right: actions -->
   <div class="header-actions">
-    <label class="subject-toggle">
-      <input type="checkbox" id="remove-subject-cb">
-      Separate subject
+    <label class="subject-toggle" title="Detect and separate subject line">
+      <input type="checkbox" id="remove-subject-cb"> Separate subject
     </label>
-    <div class="header-sep"></div>
-    <a href="/faq.html" target="_blank" class="header-link">FAQ</a>
-    <a href="https://github.com/jonwadsworth/MarkOut" target="_blank" class="header-link">GitHub</a>
-    <button id="theme-btn">Dark</button>
-    <div class="header-sep"></div>
+    <span class="header-sep"></span>
+    <a class="header-link" href="faq.html" target="_blank">FAQ</a>
+    <a class="header-link" href="https://github.com/jonwadsworth/Markout" target="_blank">GitHub</a>
+    <span class="header-sep"></span>
+    <button id="theme-btn" title="Toggle dark mode">&#9790;</button>
     <button id="copy-btn" disabled>Copy rich text</button>
   </div>
 </header>
@@ -423,7 +411,7 @@
 <div class="workspace">
   <div class="pane">
     <div class="pane-label">Markdown</div>
-    <textarea id="input" placeholder="Paste your Markdown here&#x2026;" spellcheck="false"></textarea>
+    <textarea id="input" placeholder="Paste your Markdown here&#8230;" spellcheck="false"></textarea>
   </div>
   <div class="pane">
     <div class="pane-label">Preview</div>
@@ -434,7 +422,7 @@
 </div>
 
 <div class="status-bar">
-  <span id="status-msg">Ready — paste Markdown or an email with a Subject: line</span>
+  <span id="status-msg">Ready</span>
   <span id="word-count"></span>
 </div>
 
@@ -448,46 +436,44 @@
   var copyBtn        = document.getElementById('copy-btn');
   var toastEl        = document.getElementById('toast');
   var removeCb       = document.getElementById('remove-subject-cb');
+  var subjectArea    = document.getElementById('subject-area');
   var subjectPill    = document.getElementById('subject-pill');
-  var subjectValueEl = document.getElementById('subject-value');
   var copySubjectBtn = document.getElementById('copy-subject-btn');
   var themeBtn       = document.getElementById('theme-btn');
 
-  var LS_SUBJECT = 'markout_remove_subject';
-  var LS_THEME   = 'markout_theme';
-
   marked.setOptions({ breaks: true, gfm: true });
 
-  // ── Theme ─────────────────────────────────────────────
-  var isDark = localStorage.getItem(LS_THEME) === 'dark';
-  function applyTheme(dark) {
-    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-    themeBtn.textContent = dark ? 'Light' : 'Dark';
+  var savedTheme = localStorage.getItem('markout_theme') || 'light';
+  applyTheme(savedTheme);
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    themeBtn.textContent = theme === 'dark' ? '☀' : '☾';
   }
-  applyTheme(isDark);
-  themeBtn.addEventListener('click', function () {
-    isDark = !isDark;
-    localStorage.setItem(LS_THEME, isDark ? 'dark' : 'light');
-    applyTheme(isDark);
+
+  themeBtn.addEventListener('click', function() {
+    var cur  = document.documentElement.getAttribute('data-theme') || 'light';
+    var next = cur === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    localStorage.setItem('markout_theme', next);
   });
 
-  // ── Subject preference ────────────────────────────────
-  removeCb.checked = localStorage.getItem(LS_SUBJECT) === '1';
-  removeCb.addEventListener('change', function () {
-    localStorage.setItem(LS_SUBJECT, removeCb.checked ? '1' : '0');
-    if (!removeCb.checked) setSubject(null);
+  removeCb.checked = localStorage.getItem('markout_remove_subject') !== '0';
+  removeCb.addEventListener('change', function() {
+    localStorage.setItem('markout_remove_subject', removeCb.checked ? '1' : '0');
     render(inputEl.value);
   });
 
-  // ── Markdown detection ────────────────────────────────
   var MD_PATTERNS = [
     /^#{1,6}\s/m, /\*\*[^*\n]+\*\*/, /\*[^*\n]+\*/, /__[^_\n]+__/,
     /^[\-\*\+]\s/m, /^\d+\.\s/m, /`[^`\n]+`/, /^```/m,
     /^\[.+\]\(.+\)/m, /^>\s/m, /\|.+\|/, /^---+\s*$/m,
   ];
-  function isMarkdown(text) { return MD_PATTERNS.some(function(p){ return p.test(text); }); }
 
-  // ── Subject extraction ────────────────────────────────
+  function isMarkdown(text) {
+    return MD_PATTERNS.some(function(p) { return p.test(text); });
+  }
+
   function extractSubject(text) {
     var lines = text.split('\n');
     for (var i = 0; i < lines.length; i++) {
@@ -504,44 +490,35 @@
     return text.replace(/^([ \t]*\n)*(#{1,3} [^\n]+|subject:[^\n]+)\n?(\n)*/i, '').trimStart();
   }
 
-  // ── Subject display ───────────────────────────────────
   var currentSubject = null;
-  var flashTimer;
+
   function setSubject(subject) {
     currentSubject = subject;
     if (subject) {
-      subjectValueEl.textContent = subject;
-      subjectPill.classList.add('visible');
-      subjectPill.classList.remove('flash');
-      clearTimeout(flashTimer);
-      void subjectPill.offsetWidth;
-      subjectPill.classList.add('flash');
-      flashTimer = setTimeout(function(){ subjectPill.classList.remove('flash'); }, 700);
+      subjectPill.textContent = subject;
+      if (!subjectArea.classList.contains('visible')) {
+        subjectArea.classList.add('visible');
+      }
     } else {
-      subjectPill.classList.remove('visible', 'flash');
-      subjectValueEl.textContent = '';
+      subjectArea.classList.remove('visible');
+      subjectPill.textContent = '';
     }
   }
 
-  copySubjectBtn.addEventListener('click', function () {
-    if (!currentSubject) return;
-    navigator.clipboard.writeText(currentSubject).then(function () {
-      showToast('Subject copied ✓', 'success', 1800);
-    }).catch(function () { showToast('Copy failed', 'error', 2500); });
-  });
-
-  // ── Toast ─────────────────────────────────────────────
-  var toastTimer2;
+  var toastTimer;
   function showToast(msg, type, ms) {
+    type = type || 'success'; ms = ms || 2400;
     toastEl.textContent = msg;
-    toastEl.className = 'show ' + (type || 'success');
-    clearTimeout(toastTimer2);
-    toastTimer2 = setTimeout(function(){ toastEl.className = ''; }, ms || 2400);
+    toastEl.className = 'show ' + type;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() { toastEl.className = ''; }, ms);
   }
 
-  function setStatus(msg, type) { statusEl.textContent = msg; statusEl.className = type || ''; }
+  function setStatus(msg, type) {
+    statusEl.textContent = msg;
+    statusEl.className = type || '';
+  }
 
-  // ── Clipboard ─────────────────────────────────────────
   async function copyAsRichText(html, plain) {
     var item = new ClipboardItem({
       'text/html':  new Blob([html],  { type: 'text/html'  }),
@@ -550,37 +527,40 @@
     await navigator.clipboard.write([item]);
   }
 
-  // ── Render ────────────────────────────────────────────
-  var lastHtml = '', lastPlain = '';
+  var lastHtml = '';
+  var lastBodyText = '';
 
   function render(text) {
     if (!text.trim()) {
       previewEl.innerHTML = '<span class="empty-hint">Preview appears here after you paste</span>';
-      copyBtn.disabled = true; lastHtml = ''; lastPlain = '';
-      countEl.textContent = '';
-      setStatus('Ready — paste Markdown or an email with a Subject: line');
-      if (removeCb.checked) setSubject(null);
+      copyBtn.disabled = true; lastHtml = ''; lastBodyText = '';
+      countEl.textContent = ''; setStatus('Ready'); setSubject(null);
       return;
     }
 
     var words = text.trim().split(/\s+/).filter(Boolean).length;
     countEl.textContent = words + ' word' + (words === 1 ? '' : 's');
 
-    var bodyText = text, hasSubject = false;
+    var bodyText = text;
+    var hasSubject = false;
+
     if (removeCb.checked) {
       var subject = extractSubject(text);
       setSubject(subject);
       if (subject) { hasSubject = true; bodyText = stripSubjectLine(text); }
+    } else {
+      setSubject(null);
     }
 
     if (!hasSubject && !isMarkdown(text)) {
       previewEl.innerHTML = '<span class="empty-hint">No Markdown detected</span>';
-      copyBtn.disabled = true; lastHtml = ''; lastPlain = '';
+      copyBtn.disabled = true; lastHtml = ''; lastBodyText = '';
       setStatus('No Markdown syntax found', 'warn');
       return;
     }
 
-    lastHtml = marked.parse(bodyText); lastPlain = bodyText;
+    lastHtml = marked.parse(bodyText);
+    lastBodyText = bodyText;
     previewEl.innerHTML = lastHtml;
     copyBtn.disabled = false;
   }
@@ -588,7 +568,7 @@
   async function doCopy() {
     if (!lastHtml) return;
     try {
-      await copyAsRichText(lastHtml, lastPlain);
+      await copyAsRichText(lastHtml, lastBodyText);
       setStatus('Rich text copied — paste into Outlook', 'success');
       showToast('Copied as rich text ✓');
     } catch (err) {
@@ -597,13 +577,24 @@
     }
   }
 
-  inputEl.addEventListener('paste', function () {
-    setTimeout(async function () { render(inputEl.value); if (lastHtml) await doCopy(); }, 0);
+  copySubjectBtn.addEventListener('click', async function() {
+    if (!currentSubject) return;
+    try {
+      await navigator.clipboard.writeText(currentSubject);
+      showToast('Subject copied ✓');
+    } catch (err) { showToast('Copy failed', 'error', 3000); }
   });
-  inputEl.addEventListener('input', function () { render(inputEl.value); });
+
+  inputEl.addEventListener('paste', function() {
+    setTimeout(async function() {
+      render(inputEl.value);
+      if (lastHtml) await doCopy();
+    }, 0);
+  });
+
+  inputEl.addEventListener('input', function() { render(inputEl.value); });
   copyBtn.addEventListener('click', doCopy);
 </script>
+
 </body>
 </html>
-
-
