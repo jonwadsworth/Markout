@@ -1,0 +1,4 @@
+# Python server artifacts
+__pycache__/
+*.py[cod]
+

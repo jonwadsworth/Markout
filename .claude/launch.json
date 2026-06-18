@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "markout",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "3737", "--directory", "C:\\Users\\u21505\\Markout"],
+      "port": 3737
+    }
+  ]
+}
