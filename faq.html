@@ -130,6 +130,21 @@
     }
     .cta-btn:hover { opacity: 0.8; }
 
+    .sample-md {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 6px; padding: 14px 16px; margin-top: 12px;
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 12.5px; line-height: 1.6; color: var(--text2);
+      white-space: pre-wrap; word-wrap: break-word; position: relative;
+    }
+    .copy-sample-btn {
+      position: absolute; top: 8px; right: 8px;
+      padding: 4px 10px; background: var(--accent); color: #fff;
+      border: none; border-radius: 4px; font-size: 11px; font-weight: 600;
+      cursor: pointer;
+    }
+    .copy-sample-btn:hover { opacity: 0.85; }
+
     @media (max-width: 600px) {
       header { padding: 0 14px; }
       .brand-name { font-size: 18px; }
@@ -138,12 +153,21 @@
       .page-title { font-size: 22px; }
     }
   </style>
-  <script async src="https://umami.jonwadsworth.com/script.js" data-website-id="846733b8-e86d-4320-9941-66f84d82e9fd"></script>
+  <script async src="https://umami.jonwadsworth.com/script.js" data-website-id="846733b8-e86d-4320-9941-66f84d82e9fd">
+  document.getElementById('copy-sample').addEventListener('click', function() {
+    var el = document.getElementById('sample-md');
+    var text = el.textContent.replace('Copy', '').trim();
+    navigator.clipboard.writeText(text).then(function() {
+      document.getElementById('copy-sample').textContent = 'Copied!';
+      setTimeout(function() { document.getElementById('copy-sample').textContent = 'Copy'; }, 2000);
+    });
+  });
+</script>
 </head>
 <body>
 
 <header>
-  <a class="brand-name" href="index.html"><img src="images/markout-favicon.svg" alt="" width="22" height="22" style="vertical-align:-3px;margin-right:5px">Mark<span>Out</span></a>
+  <a class="brand-name" href="index.html"><img src="images/markout-icon-512.png" alt="" width="22" height="22" style="vertical-align:-3px;margin-right:5px;border-radius:4px">Mark<span>Out</span></a>
   <nav>
     <a class="nav-link" href="index.html">&#8592; App</a>
     <a class="nav-link" href="https://github.com/jonwadsworth/Markout" target="_blank">GitHub</a>
@@ -240,6 +264,15 @@
   document.querySelectorAll('.faq-q').forEach(function(btn) {
     btn.addEventListener('click', function() {
       btn.closest('.faq-item').classList.toggle('open');
+    });
+  });
+
+  document.getElementById('copy-sample').addEventListener('click', function() {
+    var el = document.getElementById('sample-md');
+    var text = el.textContent.replace('Copy', '').trim();
+    navigator.clipboard.writeText(text).then(function() {
+      document.getElementById('copy-sample').textContent = 'Copied!';
+      setTimeout(function() { document.getElementById('copy-sample').textContent = 'Copy'; }, 2000);
     });
   });
 </script>
